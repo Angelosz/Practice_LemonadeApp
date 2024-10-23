@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.practice_lemonadeapp.ui.theme.Practice_LemonadeAppTheme
@@ -41,6 +42,7 @@ enum class LemonadeState {
 @Composable
 fun LemonadeInteractiveButton(modifier: Modifier = Modifier){
     val lemonadeState: LemonadeState by remember { mutableStateOf(LemonadeState.Harvesting) }
+    var filledGlassPercentage = 0.0f
 
     Column(modifier,
         horizontalAlignment = Alignment.CenterHorizontally){
@@ -59,7 +61,12 @@ fun LemonadeInteractiveButton(modifier: Modifier = Modifier){
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "Text"
+            text = when(lemonadeState){
+                LemonadeState.Harvesting -> stringResource(R.string.lemon_tree_instruction)
+                LemonadeState.Squeezing -> stringResource(R.string.lemon_squeeze_instruction) + " $filledGlassPercentage% squeezed!"
+                LemonadeState.Filled -> stringResource(R.string.lemon_drink_instruction)
+                LemonadeState.Empty -> stringResource(R.string.lemon_restart_instruction)
+            }
         )
     }
 }
@@ -68,7 +75,8 @@ fun LemonadeInteractiveButton(modifier: Modifier = Modifier){
     showBackground = true)
 @Composable
 fun LemonadeAppPreview(){
-    LemonadeInteractiveButton(Modifier
-        .fillMaxSize()
-        .wrapContentSize(Alignment.Center))
+    LemonadeInteractiveButton(
+        Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center))
 }
