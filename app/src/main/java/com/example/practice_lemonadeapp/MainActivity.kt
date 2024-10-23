@@ -1,32 +1,23 @@
 package com.example.practice_lemonadeapp
 
 import android.os.Bundle
-import android.service.autofill.OnClickAction
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,17 +34,25 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
+enum class LemonadeState {
+    Harvesting, Squeezing, Filled, Empty
+}
 
 @Composable
 fun LemonadeInteractiveButton(modifier: Modifier = Modifier){
+    val lemonadeState: LemonadeState by remember { mutableStateOf(LemonadeState.Harvesting) }
 
     Column(modifier,
         horizontalAlignment = Alignment.CenterHorizontally){
         Button( onClick = {} ) {
             Image(
-                painter = painterResource(R.drawable.lemon_tree),
-                contentDescription = null
+                painter = painterResource(when(lemonadeState){
+                    LemonadeState.Harvesting -> R.drawable.lemon_tree
+                    LemonadeState.Squeezing -> R.drawable.lemon_squeeze
+                    LemonadeState.Filled -> R.drawable.lemon_drink
+                    LemonadeState.Empty -> R.drawable.lemon_restart
+                }),
+                contentDescription = lemonadeState.toString()
             )
         }
 
