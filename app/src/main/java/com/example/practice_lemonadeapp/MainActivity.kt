@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.practice_lemonadeapp.ui.theme.Practice_LemonadeAppTheme
 import kotlin.math.roundToInt
 import kotlin.random.Random
@@ -63,7 +64,7 @@ fun LemonadeInteractiveButton(modifier: Modifier = Modifier){
                 LemonadeState.Filled -> lemonadeState = LemonadeState.Empty
                 LemonadeState.Empty -> lemonadeState = LemonadeState.Harvesting
             }
-        } ) {
+        }) {
             Image(
                 painter = painterResource(when(lemonadeState){
                     LemonadeState.Harvesting -> R.drawable.lemon_tree
@@ -83,7 +84,8 @@ fun LemonadeInteractiveButton(modifier: Modifier = Modifier){
                 LemonadeState.Squeezing -> stringResource(R.string.lemon_squeeze_instruction) + "Glass at ${filledGlassPercentage.roundToInt()}%."
                 LemonadeState.Filled -> stringResource(R.string.lemon_drink_instruction)
                 LemonadeState.Empty -> stringResource(R.string.lemon_restart_instruction)
-            }
+            },
+            fontSize = 18.sp
         )
     }
 }
