@@ -14,8 +14,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,6 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.practice_lemonadeapp.ui.theme.Practice_LemonadeAppTheme
+import kotlin.math.roundToInt
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,12 +45,25 @@ enum class LemonadeState {
 
 @Composable
 fun LemonadeInteractiveButton(modifier: Modifier = Modifier){
-    val lemonadeState: LemonadeState by remember { mutableStateOf(LemonadeState.Harvesting) }
-    var filledGlassPercentage = 0.0f
+    var lemonadeState: LemonadeState by remember { mutableStateOf(LemonadeState.Harvesting) }
+    var filledGlassPercentage by remember { mutableFloatStateOf(0f) }
 
     Column(modifier,
         horizontalAlignment = Alignment.CenterHorizontally){
-        Button( onClick = {} ) {
+        Button( onClick = {
+            when(lemonadeState){
+                LemonadeState.Harvesting -> lemonadeState = LemonadeState.Squeezing
+                LemonadeState.Squeezing -> {
+                    filledGlassPercentage += Random.nextFloat() * 20 + 20
+                    if(filledGlassPercentage > 100) {
+                        filledGlassPercentage = 0f
+                        lemonadeState = LemonadeState.Filled
+                    }
+                }
+                LemonadeState.Filled -> lemonadeState = LemonadeState.Empty
+                LemonadeState.Empty -> lemonadeState = LemonadeState.Harvesting
+            }
+        } ) {
             Image(
                 painter = painterResource(when(lemonadeState){
                     LemonadeState.Harvesting -> R.drawable.lemon_tree
@@ -63,7 +80,7 @@ fun LemonadeInteractiveButton(modifier: Modifier = Modifier){
         Text(
             text = when(lemonadeState){
                 LemonadeState.Harvesting -> stringResource(R.string.lemon_tree_instruction)
-                LemonadeState.Squeezing -> stringResource(R.string.lemon_squeeze_instruction) + " $filledGlassPercentage% squeezed!"
+                LemonadeState.Squeezing -> stringResource(R.string.lemon_squeeze_instruction) + "Glass at ${filledGlassPercentage.roundToInt()}%."
                 LemonadeState.Filled -> stringResource(R.string.lemon_drink_instruction)
                 LemonadeState.Empty -> stringResource(R.string.lemon_restart_instruction)
             }
@@ -75,8 +92,7 @@ fun LemonadeInteractiveButton(modifier: Modifier = Modifier){
     showBackground = true)
 @Composable
 fun LemonadeAppPreview(){
-    LemonadeInteractiveButton(
-        Modifier
+    LemonadeInteractiveButton(Modifier
             .fillMaxSize()
             .wrapContentSize(Alignment.Center))
 }
